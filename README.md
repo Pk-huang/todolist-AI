@@ -2,6 +2,26 @@
 
 A Todo List mockup built with **Next.js**, **shadcn/ui**, and **Tailwind CSS**.
 
+## 📝 命令記錄
+
+建立 Next.js todolist mockup
+
+安裝 shadcn/ui 讓爺可以 demo
+
+傳到 GitHub 並安裝 gh-pages 讓爺可以 demo
+
+tailwind 沒有部署
+
+你的資料拉取似乎出了問題
+
+如果我要分享我的 核心 Prompt 以及如何下命令 你會怎麼做
+
+用中文的方式填寫 並且訪到最上面
+
+先回覆到沒有 核心promate
+
+將我對你下的命令 直接記錄下來 不要有任何的修改
+
 ## ✨ Features
 
 - 📋 **100 mock todos** loaded from a local JSON file
