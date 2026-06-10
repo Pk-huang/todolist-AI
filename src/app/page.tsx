@@ -33,18 +33,18 @@ const statusConfig: Record<
   Todo["status"],
   { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
 > = {
-  pending: { label: "\u5f85\u8655\u7406", variant: "outline" },
-  "in-progress": { label: "\u9032\u884c\u4e2d", variant: "default" },
-  completed: { label: "\u5df2\u5b8c\u6210", variant: "secondary" },
+  pending: { label: "待處理", variant: "outline" },
+  "in-progress": { label: "進行中", variant: "default" },
+  completed: { label: "已完成", variant: "secondary" },
 };
 
 const priorityConfig: Record<
   Todo["priority"],
   { label: string; className: string }
 > = {
-  high: { label: "\u9ad8", className: "bg-red-100 text-red-700 border-red-200" },
-  medium: { label: "\u4e2d", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-  low: { label: "\u4f4e", className: "bg-green-100 text-green-700 border-green-200" },
+  high: { label: "高", className: "bg-red-100 text-red-700 border-red-200" },
+  medium: { label: "中", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+  low: { label: "低", className: "bg-green-100 text-green-700 border-green-200" },
 };
 
 export default function Home() {
@@ -98,9 +98,9 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 p-6 md:p-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">\u5f85\u8fa6\u4e8b\u9805\u6e05\u55ae</h1>
+          <h1 className="text-3xl font-bold text-gray-900">待辦事項清單</h1>
           <p className="mt-1 text-sm text-gray-500">
-            \u5171 {todos.length} \u7b46\u8cc7\u6599\uff0c\u76ee\u524d\u986f\u793a {filteredTodos.length} \u7b46\u7d50\u679c
+            共 {todos.length} 筆資料，目前顯示 {filteredTodos.length} 筆結果
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export default function Home() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
-              placeholder="\u641c\u5c0b\u6a19\u984c\u6216\u63cf\u8ff0..."
+              placeholder="搜尋標題或描述..."
               value={searchQuery}
               onChange={handleSearch}
               className="pl-9 bg-white"
@@ -124,7 +124,7 @@ export default function Home() {
                 setCurrentPage(1);
               }}
             >
-              \u6e05\u9664
+              清除
             </Button>
           )}
         </div>
@@ -134,18 +134,18 @@ export default function Home() {
             <TableHeader>
               <TableRow className="bg-gray-50">
                 <TableHead className="w-12 text-center font-semibold text-gray-700">#</TableHead>
-                <TableHead className="font-semibold text-gray-700">\u6a19\u984c</TableHead>
-                <TableHead className="font-semibold text-gray-700 hidden md:table-cell">\u63cf\u8ff0</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center">\u72c0\u614b</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center">\u512a\u5148\u7d1a</TableHead>
-                <TableHead className="font-semibold text-gray-700 hidden lg:table-cell">\u622a\u6b62\u65e5\u671f</TableHead>
+                <TableHead className="font-semibold text-gray-700">標題</TableHead>
+                <TableHead className="font-semibold text-gray-700 hidden md:table-cell">描述</TableHead>
+                <TableHead className="font-semibold text-gray-700 text-center">狀態</TableHead>
+                <TableHead className="font-semibold text-gray-700 text-center">優先級</TableHead>
+                <TableHead className="font-semibold text-gray-700 hidden lg:table-cell">截止日期</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedTodos.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-12 text-gray-400">
-                    \u6c92\u6709\u7b26\u5408\u689d\u4ef6\u7684\u5f85\u8fa6\u4e8b\u9805
+                    沒有符合條件的待辦事項
                   </TableCell>
                 </TableRow>
               ) : (
@@ -183,7 +183,7 @@ export default function Home() {
         {totalPages > 1 && (
           <div className="mt-6 flex items-center justify-between">
             <p className="text-sm text-gray-500">
-              \u7b2c {currentPage} / {totalPages} \u9801\uff0c\u5171 {filteredTodos.length} \u7b46
+              第 {currentPage} / {totalPages} 頁，共 {filteredTodos.length} 筆
             </p>
             <div className="flex items-center gap-1">
               <Button
@@ -198,7 +198,7 @@ export default function Home() {
 
               {getPageNumbers().map((page, index) =>
                 page === "..." ? (
-                  <span key={"ellipsis-" + index} className="px-2 text-gray-400 text-sm">\u2026</span>
+                  <span key={"ellipsis-" + index} className="px-2 text-gray-400 text-sm">…</span>
                 ) : (
                   <Button
                     key={page}
