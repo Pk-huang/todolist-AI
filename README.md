@@ -11,6 +11,130 @@ A Todo List mockup built with **Next.js**, **shadcn/ui**, and **Tailwind CSS**.
 - ⚡ **Priority labels** — High / Medium / Low with color coding
 - 📱 **Responsive design** — columns hide gracefully on smaller screens
 
+## 🧠 我的設計思路
+
+這個項目是 AI 輔助開發的完整演示。展示了如何從需求到完成的全面思考過程：
+
+### 階段 1：需求分析 → 框架選擇
+**你的指令：** "建立 Next.js todolist mockup"
+
+**我的思考：**
+- ✅ mockup = 快速演示，不是生產級代碼
+- ✅ 選擇 Next.js → App Router、靜態導出潛力
+- ✅ 選擇 shadcn/ui → 速度快、質量高、可定制
+
+**實際行動：**
+```bash
+# 創建 Next.js 項目並安裝依賴
+npx create-next-app@latest todolist-app --typescript
+cd todolist-app
+npx shadcn@latest init -d
+npm install lucide-react
+```
+
+### 階段 2：功能設計 → 用戶體驗
+**你的指令：** "安裝 shadcn/ui 讓爺可以 demo"
+
+**我的思考：**
+- ✅ 核心功能：搜尋（待辦清單必需）、分頁（100 條數據）、狀態/優先級可視化
+- ✅ 你說「demo」→ 需要響應式設計，在各裝置上展示
+- ✅ 不加 debounce → 即時反饋，展示數據真的在過濾
+
+**實際行動：**
+- 構建搜尋功能（即時跨越標題 + 描述）
+- 實現智能分頁（10 條/頁，第 5 頁後顯示省略號）
+- 色彩標記狀態（待處理、進行中、已完成）
+- 優先級視覺層級感（高/中/低）
+- 響應式隱藏列（手機隱藏描述，平板隱藏截止日期）
+
+### 階段 3：本地 → 線上部署
+**你的指令：** "傳到 GitHub 並安裝 gh-pages 讓爺可以 demo"
+
+**我的思考：**
+- ✅ GitHub Pages → 必須是靜態導出，無伺服器
+- ✅ 子目錄部署 → 需要 basePath="/todolist-AI"
+- ✅ 公開網址 → 方便分享給爺爺
+
+**實際行動：**
+```bash
+# 配置靜態導出
+# next.config.ts: output: "export", basePath: "/todolist-AI"
+
+npm install gh-pages --save-dev
+# package.json 添加: "deploy": "next build && gh-pages -d out --nojekyll"
+
+git push origin main
+npm run deploy  # 發布到 gh-pages 分支
+```
+
+### 階段 4：測試發現問題 → 主動除錯
+**你的反饋：** "tailwind 沒有部署"
+
+**我的思考：**
+- 🚨 CSS 沒載入 → GitHub Pages 經典問題
+- 🚨 根本原因：Jekyll 自動忽略底線開頭的資料夾（_next/）
+- ✅ 解決方案：--nojekyll 告訴 GitHub Pages 跳過 Jekyll 處理
+
+**實際行動：**
+```bash
+# 修改 deploy 指令
+# "deploy": "next build && gh-pages -d out --nojekyll"
+
+# 驗證 CSS 現在返回 HTTP 200
+curl -I https://github.com/Pk-huang/todolist-AI/.../*.css
+
+npm run deploy  # 重新部署
+```
+
+### 階段 5：編碼問題 → 系統修復
+**你的反饋：** "你的資料拉取似乎出了問題"（看到 \uXXXX 而不是中文）
+
+**我的思考：**
+- 🚨 Unicode 轉義序列在輸出中可見
+- 🚨 根本原因：page.tsx 有字面的 \uXXXX 而不是 UTF-8
+- ✅ 解決方案：全面替換轉義序列為原生中文字符
+- ✅ 元數據也是英文預設 → 更新標題/描述/語言
+
+**實際行動：**
+```bash
+# 識別 20+ 個轉義序列實例
+# \u5f85\u8655\u7406 → 待處理
+# \u9032\u884c\u4e2d → 進行中
+# \u5df2\u5b8c\u6210 → 已完成
+
+# 套用全面補丁修復所有中文文本
+git add src/app/page.tsx src/app/layout.tsx
+git commit -m "fix: restore chinese ui text and metadata"
+git push origin main
+npm run deploy
+```
+
+### 階段 6：分享知識 → 透明化過程
+**你的問題：** "如果要分享核心 Prompt 和如何下命令，怎麼做？"
+
+**我的思考：**
+- ✅ 透明度：分享 AI 被提示的方式
+- ✅ 可重現性：包含所有運行/部署命令
+- ✅ 學習價值：記錄每個決策的原因
+- ✅ 背景脈絡：幫助別人理解為什麼這樣選擇
+
+**實際行動：**
+- 添加「System Prompt」章節展示 AI 指導原則
+- 添加「Usage Instructions」逐步指南
+- 添加「Command Examples」複製即用的命令
+- 創建本章節記錄設計思路
+
+### 核心原則對應表
+
+| 原則 | 如何應用 |
+|-----|---------|
+| **先理解再行動** | 釐清 mockup vs 生產級需求 |
+| **主動問題解決** | 不等你說 CSS 有問題，主動測試部署 |
+| **數據驅動除錯** | 用 HTTP 檢查、grep 搜尋識別編碼問題 |
+| **透明進度追蹤** | 所有工作在 git 歷史中，每次提交都有意義 |
+| **減少用戶努力** | 預先建 100 條 mock 數據，寫好部署腳本 |
+| **迭代驗證** | 本地開發 → GitHub Pages → 你驗證，每階段都確認 |
+
 ## 🛠️ Tech Stack
 
 - [Next.js 16](https://nextjs.org/) (App Router, Static Export)
@@ -58,206 +182,104 @@ src/
     └── todos.json      # 100 mock todo items
 ```
 
-## 💡 System Prompt
+## 💡 AI 系統提示詞
 
-This project was created with an AI-first development approach. The core system prompt focuses on:
+這個項目使用以下 AI 指導原則開發：
 
 ```
-你是一个高级编程助手，具备多编程语言和框架的专业知识。
-你的职责是：
-1. 仔细理解用户需求
-2. 主动使用工具收集必要的上下文信息
-3. 执行变更而不仅仅是建议
-4. 跟踪多步骤任务的进度
-5. 确保完成的工作符合最小惊讶原则
-6. 在代码中使用中文注释和文档字符串
-7. 提供事实性的进度更新而不是冗长的解释
+你是一個高級編程助手，具備多編程語言和框架的專業知識。
+你的職責是：
+1. 仔細理解用戶需求
+2. 主動使用工具收集必要的上下文信息
+3. 執行變更而不僅僅是建議
+4. 跟踪多步驟任務的進度
+5. 確保完成的工作符合最小驚訝原則
+6. 在代碼中使用中文註釋和文檔字符串
+7. 提供事實性的進度更新而不是冗長的解釋
 ```
 
-## 🧠 My Design Thinking Process
+## 📖 使用說明
 
-This section documents how I approached building this project from concept to completion:
+### 本地開發
 
-### Phase 1: Requirements → Foundation
-**User Request:** "建立 Next.js todolist mockup"
-
-**My Thinking:**
-- ✅ User wants a mockup: means quick demo, not production-grade
-- ✅ Next.js mentioned: implies App Router, static export potential
-- ✅ No UI library specified: choose shadcn/ui for speed + quality
-
-**Actions:**
-- Scaffolded Next.js 16 with TypeScript
-- Installed shadcn/ui (Table, Input, Badge, Button)
-- Created 100 mock todos in JSON for realistic dataset
-
-### Phase 2: Features → Implementation
-**User Request:** "安裝 shadcn/ui 讓爺可以 demo"
-
-**My Thinking:**
-- ✅ Core features needed: search (essential for todo list), pagination (UX for 100 items), status/priority visualization
-- ✅ User mentioned "demo" → need responsive design visible across devices
-- ✅ No debounce on search: instant feedback shows data actually filters
-
-**Actions:**
-- Built search filter (real-time across title + description)
-- Implemented smart pagination (10 items/page with ellipsis at page 5+)
-- Color-coded status badges (待處理, 進行中, 已完成)
-- Priority levels with visual hierarchy (高/中/低)
-- Responsive columns (hide description on mobile, due date on tablets)
-
-### Phase 3: Demo → Deployment
-**User Request:** "傳到 GitHub 並安裝 gh-pages 讓爺可以 demo"
-
-**My Thinking:**
-- ✅ GitHub Pages required: means static export, no server
-- ✅ Subdirectory deployment: need basePath="/todolist-AI"
-- ✅ Public URL needed: configure for easy sharing
-
-**Actions:**
-- Enabled static export in next.config.ts
-- Set basePath="/todolist-AI"
-- Installed gh-pages package
-- Created deploy script: `npm run deploy`
-- Pushed to https://github.com/Pk-huang/todolist-AI
-
-### Phase 4: Issues → Active Debugging
-**User Report:** "tailwind 沒有部署"
-
-**My Thinking:**
-- 🚨 CSS not loading: classic GitHub Pages issue
-- 🚨 Root cause analysis: Jekyll ignores folders starting with underscore (_next/ folder)
-- ✅ Solution: --nojekyll flag tells GitHub Pages to skip Jekyll processing
-
-**Actions:**
-- Added --nojekyll flag to deployment script
-- Verified CSS bundle now returns HTTP 200
-- Tested live demo: https://Pk-huang.github.io/todolist-AI/
-
-### Phase 5: Data Corruption → Systematic Fix
-**User Report:** "你的資料拉取似乎出了問題" (saw \uXXXX instead of Chinese)
-
-**My Thinking:**
-- 🚨 Unicode escape sequences visible in rendered output
-- 🚨 Root cause: page.tsx had literal \uXXXX sequences instead of UTF-8
-- ✅ Solution: Replace all escape sequences with native Chinese characters
-- ✅ Metadata also in English defaults: update title/description/lang
-
-**Actions:**
-- Identified 20+ escape sequence instances
-- Applied comprehensive patch to restore Chinese text
-- Updated metadata: title→"todolist-AI", description→Chinese, lang→"zh-Hant"
-- Rebuilt and redeployed
-- Verified fix in both local dev and live demo
-
-### Phase 6: Documentation → Sharing
-**User Request:** "如果我要分享我的核心 Prompt 以及如何下命令，你會怎麼做"
-
-**My Thinking:**
-- ✅ Transparency: share how AI was prompted to build this
-- ✅ Reproducibility: include all commands needed to run/deploy
-- ✅ Learning: document the thinking process for each decision
-- ✅ Context: help others understand why choices were made
-
-**Actions:**
-- Added "System Prompt" section showing AI guidelines
-- Added "Usage Instructions" with step-by-step guide
-- Added "Command Examples" with copy-paste ready commands
-- Created this section to document design thinking
-
-### Key Principles Applied
-
-| Principle | How I Used It |
-|-----------|---------------|
-| **Understand Before Acting** | Asked for clarification on mockup vs production needs |
-| **Proactive Problem Solving** | Didn't wait for CSS bug report—tested deployment immediately |
-| **Data-Driven Debugging** | Used HTTP checks, grep searches to identify unicode issues |
-| **Transparent Progress** | Cached all work in git history; each change has meaningful commit message |
-| **Minimize User Effort** | Pre-created 100 mock todos, wrote deploy script, tested on GitHub Pages |
-| **Iterative Validation** | Local dev → GitHub Pages → user verification at each phase |
-
-## 📖 Usage Instructions
-
-### Local Development
-
-1. **Clone the repository:**
+1. **克隆倉庫：**
    ```bash
    git clone https://github.com/Pk-huang/todolist-AI.git
    cd todolist-app
    ```
 
-2. **Install dependencies:**
+2. **安裝依賴：**
    ```bash
    npm install
    ```
 
-3. **Start the development server:**
+3. **啟動開發伺服器：**
    ```bash
    npm run dev
    ```
 
-4. **Open in browser:**
-   - Local: `http://localhost:3000/todolist-AI`
-   - The page loads with 100 mock todos ready to search and paginate
+4. **在瀏覽器打開：**
+   - 本地：`http://localhost:3000/todolist-AI`
+   - 已預設 100 條 mock 待辦事項，可搜尋和分頁
 
-### Features Usage
+### 功能使用
 
-- **Search**: Type in the search box to filter todos by title or description (instant, no debounce)
-- **Pagination**: Navigate through pages with Previous/Next buttons; jump to specific pages using numbered buttons
-- **Status Badges**: Color-coded status indicators (待處理, 進行中, 已完成)
-- **Priority Levels**: Visual priority coding (高/red, 中/yellow, 低/green)
-- **Responsive Columns**: Table adapts to screen size (description hidden on mobile, due date hidden on tablets)
+- **搜尋**：在搜尋框輸入，即時過濾標題或描述（無 debounce）
+- **分頁**：使用上一頁/下一頁按鈕導航；點擊數字按鈕跳轉特定頁數
+- **狀態徽章**：色彩編碼狀態指示符（待處理、進行中、已完成）
+- **優先級**：視覺優先級編碼（高/紅、中/黃、低/綠）
+- **響應式列**：表格根據螢幕尺寸調整（手機隱藏描述，平板隱藏截止日期）
 
-## 🔧 Command Examples
+## 🔧 指令範例
 
-### Development
+### 開發
 
 ```bash
-# Start dev server on http://localhost:3000/todolist-AI
+# 在 http://localhost:3000/todolist-AI 啟動開發伺服器
 npm run dev
 
-# Build the static export (generates /out directory)
+# 構建靜態導出（生成 /out 目錄）
 npm run build
 
-# Check for TypeScript errors
+# 檢查 TypeScript 錯誤
 npm run lint
 ```
 
-### Deployment
+### 部署
 
 ```bash
-# Full deployment to GitHub Pages
+# 完整部署到 GitHub Pages
 npm run deploy
-# This runs: next build && gh-pages -d out --nojekyll
+# 執行命令：next build && gh-pages -d out --nojekyll
 
-# Manual steps (if needed):
-npm run build        # Create optimized build
-gh-pages -d out --nojekyll  # Publish with .nojekyll to disable Jekyll
+# 手動步驟（如需要）：
+npm run build        # 創建優化的构建
+gh-pages -d out --nojekyll  # 發佈並禁用 Jekyll
 ```
 
-### Git Workflow
+### Git 工作流
 
 ```bash
-# After making changes:
+# 修改後：
 git add .
 git commit -m "your commit message"
 git push origin main
 
-# Deploy new changes:
+# 部署新變更：
 npm run deploy
 ```
 
-## 🎯 Configuration
+## 🎯 配置
 
-### Important Files
+### 重要文件
 
-- **next.config.ts**: Sets `basePath: "/todolist-AI"` for GitHub Pages subdirectory
-- **src/data/todos.json**: Add or modify 100 mock todos here
-- **src/app/page.tsx**: Main component with search/pagination logic
-- **.nojekyll**: Required by gh-pages to prevent Jekyll from ignoring `_next/` folder
+- **next.config.ts**：設置 `basePath: "/todolist-AI"` 用於 GitHub Pages 子目錄
+- **src/data/todos.json**：添加或修改 100 條 mock 待辦事項
+- **src/app/page.tsx**：主要組件，包含搜尋/分頁邏輯
+- **.nojekyll**：GitHub Pages 必需，防止 Jekyll 忽略 `_next/` 資料夾
 
-### Environment
+### 環境要求
 
-- **Node.js**: 18+ recommended
-- **npm**: 9+
-- **Package manager**: npm (can switch to yarn/pnpm if needed)
+- **Node.js**：18+ 推薦
+- **npm**：9+
+- **套件管理器**：npm（可切換為 yarn/pnpm）
